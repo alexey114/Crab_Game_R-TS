@@ -62,9 +62,9 @@ h1{
   color: white;
 }
 
-.hide{
+/* .hide{
   display: none;
-}
+} */
 
 .primary {
   color: #c28c3f;
@@ -86,7 +86,7 @@ h1{
   object-fit: contain;
 }
 
-.crab{
+.crab__game_img{
   position: absolute;
   cursor: pointer;
   top: 0;

@@ -5,10 +5,11 @@ function App() {
 
   let time = 0;
   let interval:any;
+  let seconds = [15,30,45,60]
 
   // let [rulesGame, setRulesGame] = useState()
-  let [rulesGame, setRulesGame] = useState(false)  //переключения с начала игры на правила
-  let [timeGame, setTimeGame] = useState(false)  //переключения с правил на выбор времени игры
+  let [isRulesGame, setIsRulesGame] = useState(false)  //переключения с начала игры на правила
+  let [isTimeGame, setIsTimeGame] = useState(false)  //переключения с правил на выбор времени игры
   let [select, setSelect] = useState(false)  //переключения с правил на выбор времени игры
   let [timer, setTimer] = useState<number>(0)
   let [bonus, setBonus] = useState<number>(0)
@@ -17,21 +18,28 @@ function App() {
   // let [fifteenSeconds, setFifteenSeconds] = useState(false);
 
   function showRulesGame() {
-    setRulesGame(true)
+    setIsRulesGame(true)
   }
 
   function selectTimeGame() {
-    setTimeGame(true)
+    setIsTimeGame(true)
   }
 
   function selectTime(time: number) {
-    setTimeGame(false)
-    setRulesGame(false)
+    setIsTimeGame(false)
+    setIsRulesGame(false)
     setSelect(true)
     setTimer(time)
 
     interval = setInterval(()=>timeLeft(--time), 1000)
   }
+
+  function createList(item:number){
+    return <li><button className="btn__game" onClick={() => { selectTime(item) }}>{item} сек</button></li>
+  }
+  
+  let secondList = seconds.map(createList)
+
 
   function timeLeft(timer: number) {
       let time = timer
@@ -62,25 +70,25 @@ function App() {
 
   function Game() {
 
-    if (!rulesGame && !timeGame && !select) {
+    if (!isRulesGame && !isTimeGame && !select) {
       return <div className="start__page">
         <h1>Crab game</h1>
         <a href="/#" onClick={showRulesGame}>START</a>
       </div>
-    } else if (rulesGame && !timeGame) {
+    } else if (isRulesGame && !isTimeGame) {
       return <div className="rules__game">
         <h1>ПРАВИЛА ИГРЫ</h1>
         <p>Наводи курсором на крабов <img src="https://papik.pro/uploads/posts/2021-09/thumbs/1630675178_1-papik-pro-p-krabik-risunok-detskii-1.png" alt="crab" style={{ width: 45, background: "none" }} /> и нажимай левую кнопку мышки, тем самым лови их. Чем больше поймаешь, тем сытней тебе будет жить на острове! Удачи мой друг и обрати внимание на пальмы, они часто там прячутся</p>
         <button className='buttonYes' onClick={selectTimeGame}>Понятно!</button>
       </div>
-    } else if (timeGame && time === 0) {
+    } else if (isTimeGame && time === 0) {
       return <div className="settings__game">
         <h1>Время:</h1>
         <ul className="time__game" id="time__game">
-          <li><button className="btn__game" onClick={() => { selectTime(15) }}>15 сек</button></li>
-          <li><button className="btn__game" onClick={() => { selectTime(30) }}>30 сек</button></li>
+          {secondList}
+          {/* <li><button className="btn__game" onClick={() => { selectTime(30) }}>30 сек</button></li>
           <li><button className="btn__game" onClick={() => { selectTime(45) }}>45 сек</button></li>
-          <li><button className="btn__game" onClick={() => { selectTime(60) }}>60 сек</button></li>
+          <li><button className="btn__game" onClick={() => { selectTime(60) }}>60 сек</button></li> */}
         </ul>
       </div>
     } else if (select && timer > 0) {

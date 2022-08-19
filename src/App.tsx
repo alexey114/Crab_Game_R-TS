@@ -1,13 +1,21 @@
-import React, { useState } from 'react';
+import React, { useState,useEffect,useRef } from 'react';
 import './App.css';
+import crab_img from "./img/crab.png"
+import beach_img from "./img/beach.jpg"
+import bigBeach_img from "./img/big_beach.jpg"
 
 function App() {
 
-  let time = 0;
-  let interval:any;
-  let seconds = [15,30,45,60]
+  let [blockSize, setBlockSize] = useState<number[]>([500, 500]) //Отслеживание размера окна браузера
 
-  // let [rulesGame, setRulesGame] = useState()
+  let time:number = 0;
+  let interval:any;
+  let seconds:number[] = [15,30,45,60]
+
+  const refBoard: React.RefObject<any> = useRef()
+
+  // const crab:any = new URL("./img/crab.png", import.meta.url)
+
   let [isRulesGame, setIsRulesGame] = useState(false)  //переключения с начала игры на правила
   let [isTimeGame, setIsTimeGame] = useState(false)  //переключения с правил на выбор времени игры
   let [select, setSelect] = useState(false)  //переключения с правил на выбор времени игры
@@ -15,7 +23,15 @@ function App() {
   let [bonus, setBonus] = useState<number>(0)
   let [coordinateCrab, setCoordinateCrab] = useState([105, 105])
 
-  // let [fifteenSeconds, setFifteenSeconds] = useState(false);
+    //ОТСЛЕЖИВАНИЕ ИЗМЕНЕНИЯ РАЗМЕРА ОКНА БРАУЗЕРА ДЛЯ ПОСЛЕДУЮЩЕЙ АДАПТАЦИИ SVG ПОЛЯ ПОД НЕГО
+
+    useEffect(() => {
+      function changeWindow() {
+        setBlockSize([refBoard.current.offsetWidth, refBoard.current.offseHeight])
+        console.log("window", refBoard.current.offsetWidth, refBoard.current.offseHeight)
+      }
+      window.addEventListener("resize", changeWindow);  
+    }, [])
 
   function showRulesGame() {
     setIsRulesGame(true)
@@ -31,7 +47,7 @@ function App() {
     setSelect(true)
     setTimer(time)
 
-    interval = setInterval(()=>timeLeft(--time), 1000)
+    // interval = setInterval(()=>timeLeft(--time), 1000)
   }
 
   function createList(item:number){
@@ -55,8 +71,9 @@ function App() {
   }
 
   function downCrab() {
-    let coordinate = Math.random() * (500 - 0) + 0
-    setCoordinateCrab([coordinate, coordinate])
+    let coordinateWidth = Math.random() * blockSize[0]
+    let coordinateHeight = Math.random() * blockSize[1]
+    setCoordinateCrab([coordinateWidth, coordinateHeight])
     console.log("downCrab")
     let oneBonus = bonus
     oneBonus++
@@ -78,7 +95,8 @@ function App() {
     } else if (isRulesGame && !isTimeGame) {
       return <div className="rules__game">
         <h1>ПРАВИЛА ИГРЫ</h1>
-        <p>Наводи курсором на крабов <img src="https://papik.pro/uploads/posts/2021-09/thumbs/1630675178_1-papik-pro-p-krabik-risunok-detskii-1.png" alt="crab" style={{ width: 45, background: "none" }} /> и нажимай левую кнопку мышки, тем самым лови их. Чем больше поймаешь, тем сытней тебе будет жить на острове! Удачи мой друг и обрати внимание на пальмы, они часто там прячутся</p>
+        
+        <div>Наводите курсором на крабов <img src={crab_img} style={{width: 24, height: 24}}/> и нажимайте левую кнопку мышки, тем самым ловите их. Чем больше поймаете, тем сытней вам будет жить на острове! Удачи вам и обратите внимание на пальмы, они часто там прячутся</div>
         <button className='buttonYes' onClick={selectTimeGame}>Понятно!</button>
       </div>
     } else if (isTimeGame && time === 0) {
@@ -86,18 +104,15 @@ function App() {
         <h1>Время:</h1>
         <ul className="time__game" id="time__game">
           {secondList}
-          {/* <li><button className="btn__game" onClick={() => { selectTime(30) }}>30 сек</button></li>
-          <li><button className="btn__game" onClick={() => { selectTime(45) }}>45 сек</button></li>
-          <li><button className="btn__game" onClick={() => { selectTime(60) }}>60 сек</button></li> */}
         </ul>
       </div>
     } else if (select && timer > 0) {
       return <div className="field__game">
         <h3>Осталось {timer} сек</h3>
         <h3>Набранные очки {bonus} </h3>
-        <div className="board__game" id="board__game">
-          <img className="board__game_img" src="https://i.7fon.org/1000/c156069.jpg" alt="img_crab_game" />
-          <img className="crab__game_img" onClick={downCrab} src="https://papik.pro/uploads/posts/2021-09/thumbs/1630675178_1-papik-pro-p-krabik-risunok-detskii-1.png" alt="crab" style={{ width: 45, top: coordinateCrab[0], left: coordinateCrab[1] }} />
+        <div ref={refBoard} className="board__game" id="board__game">
+          <img className="board__game_img" src={bigBeach_img} alt="crab_img" />
+          <img className="crab__game_img" onClick={downCrab} src={crab_img} alt="crab" style={{ width: 45, top: coordinateCrab[1], left: coordinateCrab[0] }} />
         </div>
       </div>
     } else if (select && timer === 0) {
@@ -108,7 +123,6 @@ function App() {
         <div id="copy__text"><a href="https://wed-developer-bomkoar.000webhostapp.com" target="blank" className="copy">Bomko Aleksey</a></div>
       </div>
     }
-
     return <div>Hello!</div>
   }
 

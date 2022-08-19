@@ -84,6 +84,7 @@ h1{
   max-height: 85vh;
   border-radius: 25px;
   object-fit: contain;
+  width: 100%;
 }
 
 .crab__game_img{
@@ -97,4 +98,10 @@ h1{
   position: absolute;
   bottom: 5vh;
   right: 5vh;
+}
+
+.crab_img{
+  background-image: url(./img/crab.png);
+  background-repeat: no-repeat;
+  max-width: 100%;
 }
